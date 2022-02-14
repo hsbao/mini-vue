@@ -1,0 +1,29 @@
+{
+  "name": "mini-vue",
+  "version": "1.0.0",
+  "description": "简版vue",
+  "main": "index.js",
+  "scripts": {
+    "build:dev": "rollup -c",
+    "serve": "cross-env NODE_ENV=development rollup -c -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hsbao/mini-vue.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hsbao/mini-vue/issues"
+  },
+  "homepage": "https://github.com/hsbao/mini-vue#readme",
+  "devDependencies": {
+    "@babel/core": "^7.17.2",
+    "@babel/preset-env": "^7.16.11",
+    "cross-env": "^7.0.3",
+    "rollup": "^2.67.2",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-serve": "^1.1.0"
+  }
+}
