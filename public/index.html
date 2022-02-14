@@ -12,9 +12,16 @@
         let vm = new Vue({
             el: '#app',
             data() {
-                return { msg: 'mini-vue' }
+                return {
+                    msg: 'mini-vue',
+                    userInfo: {
+                        name: 'hongshibao',
+                        age: 27
+                    }
+                }
             }
         })
+        console.log(vm._data)
     </script>
 </body>
 </html>
