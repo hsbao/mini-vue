@@ -1,4 +1,5 @@
-import { isObject } from '../utils/index'
+import { def, isObject } from '../utils/index'
+import { arrayMethods } from './array'
 
 // 在data中的属性，都要使用Object.defineProperty重新定义
 // Object.defineProperty不能兼容ie8，所以vue2无法兼容ie8版本
@@ -11,10 +12,27 @@ export function observe(data) {
 }
 
 class Observer {
-	constructor(data) {
+	constructor(value) {
 		// vue中的data，如果数据的层次过多，需要递归的去解析数据中的属性，依次增加get和set
 		// 这也是性能消耗的地方，所以vue3改为proxy，不用递归
-		this.walk(data)
+		
+		// value.__ob__ = this 给每个加上__ob__，方便后续使用当前类的方法
+		def(value, '__ob__', this)
+
+		if (Array.isArray(value)) {
+			value.__proto__ = arrayMethods // 重写数组原型上可以修改数组的方法 7 个
+			// 数组，如果是数组里面有对象，再继续监测
+			this.observerArray(value)
+		} else {
+			// 对象
+			this.walk(value)
+		}
+	}
+
+	observerArray(value) {
+		for (var i = 0; i < value.length; i++) {
+			observe(value[i])
+		}
 	}
 
 	walk(data) {

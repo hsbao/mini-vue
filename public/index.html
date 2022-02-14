@@ -13,7 +13,7 @@
             el: '#app',
             data() {
                 return {
-                    msg: 'mini-vue',
+                    array: [1],
                     userInfo: {
                         name: 'hongshibao',
                         age: 27
@@ -21,6 +21,7 @@
                 }
             }
         })
+        vm._data.array.push({a: 1}, {b: 2})
         console.log(vm._data)
     </script>
 </body>
