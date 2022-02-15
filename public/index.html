@@ -7,13 +7,17 @@
     <title>Document</title>
 </head>
 <body>
+    <div id="app">
+        <p>hello</p>
+        <span>{{ name }}</span>
+    </div>
     <script src="/dist/umd/vue.js"></script>
     <script>
         let vm = new Vue({
             el: '#app',
             data() {
                 return {
-                    array: [1],
+                    name: 'mini-vue',
                     userInfo: {
                         name: 'hongshibao',
                         age: 27
@@ -21,8 +25,7 @@
                 }
             }
         })
-        vm._data.array.push({a: 1}, {b: 2})
-        console.log(vm._data)
+        // console.log(vm._data)
     </script>
 </body>
 </html>
