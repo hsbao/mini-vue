@@ -1,31 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <div id="app">
-        <p>hello</p>
-        <span>{{ name }}</span>
-    </div>
-    <script src="/dist/umd/vue.js"></script>
-    <script>
-        let vm = new Vue({
-            el: '#app',
-            data() {
-                return {
-                    name: 'mini-vue',
-                    userInfo: {
-                        name: 'hongshibao',
-                        age: 27
-                    }
-                }
-            }
-        })
-        console.log(vm.name)
-    </script>
-</body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<body>
+		<div id="app">
+			<p>hello</p>
+			<span>{{ name }}</span>
+		</div>
+		<script src="/dist/umd/vue.js"></script>
+		<script>
+			let vm = new Vue({
+				el: '#app',
+				data() {
+					return {
+						name: 'mini-vue',
+						userInfo: {
+							name: 'hongshibao',
+							age: 27,
+						},
+					}
+				},
+			})
+			// console.log(vm.name)
+		</script>
+	</body>
 </html>
