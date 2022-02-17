@@ -7,7 +7,7 @@ class Dep {
   addSub(watcher) {
     this.subs.push(watcher)
   }
-  append() {
+  depend() {
     /**
      * 此时的Dep.target就是watcher，watcher上有addDep方法
      * this则是当前的dep实例

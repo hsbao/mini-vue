@@ -12,7 +12,6 @@ methods.forEach((method) => {
 	// arrayMethods['push] = function(...args) {}
 	// 重写 7 个方法，加上一些逻辑
   arrayMethods[method] = function(...args) {
-		console.log(`用户调用了${method}方法`)
 		const result = oldArrayMethods[method].apply(this, args)
 
 		const ob = this.__ob__
@@ -33,6 +32,8 @@ methods.forEach((method) => {
 			// inserted 如果有值，那么就是一个数组，所以要继续监测数组里面的对象
 			ob.observerArray(inserted)
 		}
+
+		ob.dep.notify() // 调用这7个方法修改数组的时候，触发更新。这里的dep是Observer中的dep
 
 		return result
 	}
