@@ -27,8 +27,12 @@
       })
       // console.log(vm.name)
       setTimeout(() => {
-        vm.arr.push(4, 5, 6)
-        vm.name = 'mini-vue1'
+        vm.arr.push(4)
+        vm.arr.push(5)
+        vm.arr.push(6)
+        vm.$nextTick(() => {
+          console.log(vm.$el.innerHTML)
+        })
       }, 1000)
     </script>
   </body>

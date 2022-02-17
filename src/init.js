@@ -5,6 +5,8 @@ import { mountComponent, callHook } from './lifecycle'
 
 import { mergeOptions } from './utils/index'
 
+import nextTick from './utils/next-tick'
+
 // 在Vue的原型上扩展一个init方法 
 export function initMixin(Vue) {
 	// 初始化流程
@@ -50,4 +52,6 @@ export function initMixin(Vue) {
     // 5. 得到render方法后，然后渲染组件
     mountComponent(vm, el)
   }
+
+  Vue.prototype.$nextTick = nextTick
 }

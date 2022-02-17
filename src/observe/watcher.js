@@ -1,4 +1,5 @@
 import { pushTarget, popTarget } from './dep'
+import queueWatcher from './schedular'
 
 let id = 0
 class Watcher {
@@ -28,6 +29,13 @@ class Watcher {
     popTarget() // 删除watcher
   }
   update() {
+    // 调用dep.notify的时候，会依次执行watcher的update
+    // 先存在一个队列中
+    // 并且去重，避免重复的watcher，这样多次修改同一个属性，只会触发一次更新
+    // 最后异步执行
+    queueWatcher(this)
+  }
+  run() {
     this.get()
   }
 }
