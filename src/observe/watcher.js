@@ -12,7 +12,8 @@ class Watcher {
 
     this.user = !!options.user // true则是用户自己写的watcher
 
-    this.lazy = !!options.lazy // computed的watcher
+    this.lazy = !!options.lazy // 计算属性的watcher
+    this.dirty = options.lazy // 计算属性用的，true表示需要去取值，false表示不取值，使用旧的值
 
     this.depId = new Set()
     this.deps = []
@@ -23,7 +24,7 @@ class Watcher {
      * 所以需要判断，是用户watcher的时候，需要转成函数的格式
      */
     if (typeof exprOrFn === 'string') {
-      this.getter = function() {
+      this.getter = function () {
         /**
          * 这里会去vm取值，就会进行依赖收集
          * src/observe/index.js的defineReactive方法里，对每个属性都实例化了一个dep
@@ -40,8 +41,12 @@ class Watcher {
       this.getter = exprOrFn
     }
 
-    // 记住第一次
-    this.value = this.get() // 调用get方法 会让渲染watcher执行
+    /**
+     * 针对渲染watcher，调用get方法 会让渲染watcher执行
+     * 针对用户watcher，默认进来调用，是为了记住第一次的值
+     * 针对计算属性watcher，this.lazy为true，默认实例化watcher的时候不执行getter
+     */
+    this.value = this.lazy ? undefined : this.get()
   }
   addDep(dep) {
     const id = dep.id
@@ -69,7 +74,11 @@ class Watcher {
     // 先存在一个队列中
     // 并且去重，避免重复的watcher，这样多次修改同一个属性，只会触发一次更新
     // 最后异步执行
-    queueWatcher(this)
+    if (this.lazy) {
+      this.dirty = true
+    } else {
+      queueWatcher(this)
+    }
   }
 
   /**
@@ -85,6 +94,25 @@ class Watcher {
     this.value = newValue
     if (this.user) {
       this.callback(newValue, oldVal)
+    }
+  }
+  evaluate() {
+    this.dirty = false // 取值后变为false
+    this.value = this.get() // 这里表示计算属性取值，这里的getter就是用户写computed的时候的get方法
+  }
+
+  /**
+   * 计算属性watcher：给计算属性里面用到的属性再继续收集渲染watcher
+   */
+  depend() {
+    let i = this.deps.length
+    while (i--) {
+      /**
+       * 此时，Dep.target = 渲染watcher的
+       * 要给计算属性getter里面的name，age也把渲染watcher收集起来
+       * 这样修改的时候，才能触发页面更新
+       */
+      this.deps[i].depend()
     }
   }
 }

@@ -8,8 +8,7 @@
   </head>
   <body>
     <div id="app">
-      <p>hello {{ msg }}</p>
-      <span>{{ arr }}</span>
+      <p>{{ info }}</p>
     </div>
     <script src="/dist/umd/vue.js"></script>
     <script>
@@ -19,19 +18,53 @@
           return {
             arr: [1, 2, 3],
             msg: 'world',
+            name: 'hongshibao',
+            age: 27,
           }
         },
-        watch: {
-          msg(newVal, oldVal) {
-            console.log(newVal, oldVal)
-          }
-        }
+        // watch: {
+        //   msg(newVal, oldVal) {
+        //     console.log(newVal, oldVal)
+        //   },
+        // },
+
+        /**
+         * computed底层源码实现是Object.defineProperty中的getter
+         * 计算属性默认不执行，取值的时候再执行，如：vm.info
+         * 就算是多次取值，如果里面依赖的值没变化，就不会重新执行
+         * 等到依赖的值发生了变化，就会再重新执行，并返回最新的结果
+         *
+         * 计算属性实现中，用一直dirty变量控制是否需要执行，默认dirty为true，取值后dirty变为false
+         * 依赖的值发生变化后，dirty又变成true
+         *
+         * 1. 当在页面中使用info的时候，info不会收集watcher，因为计算属性的get里面没有收集依赖的功能
+         * 2. 如果计算属性中的name和age没有在页面其他地方用到，只在计算属性中使用，那么name和age只会收集当前计算属性的watcher
+         * 不会收集渲染watcher，所以这个时候修改name或是age，不会重新渲染页面
+         * 3. 计算属性中使用的name，age应该要收集计算属性的watcher，也要收集渲染watcher，这样在修改的时候才会重新刷新页面
+         *
+         * 在页面使用info，渲染的时候Dep.target = 渲染watcher
+         * 计算属性需要取值，在调计算属性的getter获取值的时候，Dep.target = 计算属性的watcher
+         * 所以计算属性里面的值只会收集到计算属性watcher（前提是计算属性的值没有在页面其他地方使用到）
+         */
+        computed: {
+          info() {
+            console.log('computed info')
+            return this.name + this.age
+          },
+          // info: { // 另一种写法
+          //   get() {
+          //     return this.name + this.age
+          //   },
+          //   set(newVal) {...},
+          // },
+        },
       })
-      vm.$watch('msg', function(newVal, oldVal) {
-        console.log(newVal, oldVal)
-      })
+      //console.log(vm.info)
+      // vm.$watch('msg', function (newVal, oldVal) {
+      //   console.log(newVal, oldVal)
+      // })
       setTimeout(() => {
-        vm.msg = '111'
+        vm.age = 18
       }, 1000)
     </script>
   </body>
