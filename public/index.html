@@ -21,18 +21,17 @@
             msg: 'world',
           }
         },
-        beforeCreate() {
-          console.log('user')
-        },
+        watch: {
+          msg(newVal, oldVal) {
+            console.log(newVal, oldVal)
+          }
+        }
       })
-      // console.log(vm.name)
+      vm.$watch('msg', function(newVal, oldVal) {
+        console.log(newVal, oldVal)
+      })
       setTimeout(() => {
-        vm.arr.push(4)
-        vm.arr.push(5)
-        vm.arr.push(6)
-        vm.$nextTick(() => {
-          console.log(vm.$el.innerHTML)
-        })
+        vm.msg = '111'
       }, 1000)
     </script>
   </body>

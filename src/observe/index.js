@@ -73,6 +73,7 @@ function defineReactive(data, key, value) {
 					}
 				}
 			}
+      // console.log(dep)
 			return value
 		},
 		set(newValue) {

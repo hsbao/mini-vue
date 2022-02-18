@@ -1,6 +1,21 @@
 import { observe } from './observe/index'
+import Watcher from './observe/watcher'
 
 import { proxy } from './utils/index'
+
+export function initWatchMixin(Vue) {
+	Vue.prototype.$watch = function(key, handler, options = {}) {
+		const vm = this
+		options.user = true // 表示是一个用户写的watcher
+		/**
+		 * vm
+		 * key：watch里监听的属性
+		 * handler：function (newVal, oldVal) {}
+		 * options
+		 */
+		new Watcher(vm, key, handler, options)
+	}
+}
 
 export function initState(vm) {
 	const opts = vm.$options
@@ -38,4 +53,28 @@ function initData(vm) {
 	observe(data)
 }
 function initComputed(vm) {}
-function initWatch(vm) {}
+function initWatch(vm) {
+	const watch = vm.$options.watch
+	for (let key in watch) {
+		const handler = watch[key]
+
+		/**
+		 * watch的回调可能是一个数组放了很多不同的方法
+		 * watch: {
+		 *   name: [function (newVal, oldVal) {}, function (newVal, oldVal) {}]
+		 *   age(newVal, oldVal) {}
+		 * }
+		 */
+		if (Array.isArray(handler)) {
+			for (let i = 0; i < handler.length; i++) {
+				createWatcher(vm, key, handler[i])
+			}
+		} else {
+			createWatcher(vm, key, handler)
+		}
+	}
+}
+
+function createWatcher(vm, key, handler) {
+	return vm.$watch(key, handler)
+}
