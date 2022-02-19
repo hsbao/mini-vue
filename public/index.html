@@ -9,11 +9,30 @@
   <body>
     <div id="app">
       <p>{{ info }}</p>
+      <my-button></my-button>
     </div>
     <script src="/dist/umd/vue.js"></script>
     <script>
+      /**
+       * 组件的渲染流程
+       * 1. 在自定义组件的时候，会绑定在Vue.options.components上，
+       * 如果是局部组件，会和Vue.options.components上的合并，最后可以在vm.$options.components上找到
+       * 2. 在生成组件的VNode，会根据名称找到对应的组件，通过Vue.extend创建一个构造函数
+       * 3. 生成Vnode的时候，还会到data进行一个特殊处理，如果是组件  data.hook = { init() {}}
+       * 4. 在patch的时候，如果是有data.hook.init，那么就是组件。会在init方法里 new 组件().$mount()，这样
+       * vm上就有$el，也就是组件的真实DOM
+       * 5. 最后将组件的$el插入到父容器中
+       */
+      Vue.component('my-button', {
+        template: '<button>hello</button>',
+      })
       let vm = new Vue({
         el: '#app',
+        components: {
+          'my-button': {
+            template: '<button>world</button>',
+          },
+        },
         data() {
           return {
             arr: [1, 2, 3],
