@@ -8,8 +8,10 @@
   </head>
   <body>
     <div id="app">
-      <p>{{ info }}</p>
       <my-button></my-button>
+      <li key="A">A</li>
+      <li key="B">{{msg}}</li>
+      <li key="C">C</li>
     </div>
     <script src="/dist/umd/vue.js"></script>
     <script>
@@ -36,7 +38,7 @@
         data() {
           return {
             arr: [1, 2, 3],
-            msg: 'world',
+            msg: 'B',
             name: 'hongshibao',
             age: 27,
           }
@@ -83,8 +85,8 @@
       //   console.log(newVal, oldVal)
       // })
       setTimeout(() => {
-        vm.age = 18
-      }, 1000)
+        vm.msg = 'B更新了，我只会更新B'
+      }, 3000)
     </script>
   </body>
 </html>
