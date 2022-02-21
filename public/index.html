@@ -8,6 +8,7 @@
   </head>
   <body>
     <div id="app">
+      {{ info }}
       <my-button></my-button>
       <li key="A">A</li>
       <li key="B">{{msg}}</li>
@@ -63,7 +64,7 @@
          * 不会收集渲染watcher，所以这个时候修改name或是age，不会重新渲染页面
          * 3. 计算属性中使用的name，age应该要收集计算属性的watcher，也要收集渲染watcher，这样在修改的时候才会重新刷新页面
          *
-         * 在页面使用info，渲染的时候Dep.target = 渲染watcher
+         * 在页面使用info，渲染的时候Dep.target = 渲染watcher，但计算属性的get没有收集依赖，所以info是没有dep的
          * 计算属性需要取值，在调计算属性的getter获取值的时候，Dep.target = 计算属性的watcher
          * 所以计算属性里面的值只会收集到计算属性watcher（前提是计算属性的值没有在页面其他地方使用到）
          */
@@ -84,9 +85,7 @@
       // vm.$watch('msg', function (newVal, oldVal) {
       //   console.log(newVal, oldVal)
       // })
-      setTimeout(() => {
-        vm.msg = 'B更新了，我只会更新B'
-      }, 3000)
+      
     </script>
   </body>
 </html>

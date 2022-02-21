@@ -12,7 +12,7 @@ export function initMixin(Vue) {
   // 初始化流程
   Vue.prototype._init = function (options) {
     let vm = this
-    // 将用户传递的和全局的进行一个合并
+    // 将用户传递的和全局的进行一个合并：components、directive、filter等等
     vm.$options = mergeOptions(vm.constructor.options, options)
 
     callHook(vm, 'beforeCreate')

@@ -19,7 +19,7 @@
     ├── index.js
 └── vdom
     ├── create-element.js
-    └── tests  测试相关
+    └── patch.js
 ```
 
 ## index.js

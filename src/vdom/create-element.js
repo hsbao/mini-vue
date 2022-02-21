@@ -30,7 +30,7 @@ function createComponent(vm, tag, data, key, children, ConstructorFn) {
         _isComponent: true,
       }))
       vm.$mount() // 调用$mount，会走到_update里，这个时候会把创建的真实dom挂载到vm.$el上
-      console.log(vm.$el)
+      // console.log(vm.$el)
     },
   }
   return vnode(vm, `vue-component-${tag}`, data, key, undefined, undefined, {

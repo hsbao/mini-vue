@@ -29,6 +29,8 @@ class Watcher {
          * 这里会去vm取值，就会进行依赖收集
          * src/observe/index.js的defineReactive方法里，对每个属性都实例化了一个dep
          * 取值的时候触发get，就会把当前的watcher放添加到这个dep中
+         * 因为渲染的时候，这个属性的dep已经收集了渲染watcher，此时也要收集用户写的watcher
+         * 当这个key对应的属性发生了变化。dep.notify就会依次调用渲染watcher(updateComponent)和这个用户watcher对应方法(也就是传进来的this.callback)
          */
         let path = exprOrFn.split('.') // 可能会是监听对象里某个属性userInfo.name --> ['userInfo', 'name']
         let obj = vm
@@ -62,6 +64,14 @@ class Watcher {
     /**
      * 如果是渲染watcher，那么就是调用vm._update(vm._render())更新页面
      * 如果是用户写的watcher，就是调用上面那个改造后的getter，去vm上根据传进来的key取值
+     * 
+     * 针对计算属性：
+     *  1. 最开始的是渲染watcher，在pushTarget后，dep.js里的stack = [渲染watcher]
+     *  2. 调用vm._render的时候，先执行render里面的逻辑。如果有使用到计算属性，那么也会把计算属性watcher添加进去， stack = [渲染watcher, 计算属性watcher]
+     *  3. 使用计算属性的时候，就会触发计算属性的getter，执行完getter就会调用popTarget，把计算属性的watcher删除，stack = [渲染watcher]
+     *  4. 然后在计算属性watcher里就会判断 Dep.target 是否还有值，也就是 stack是否有值
+     *  5. 此时还有一个渲染watcher，然后就给compouted里面依赖的属性，也收集渲染watcher
+     *  6. 这样一来，compouted里面依赖的属性发生改变，就会触发渲染watcher的updateComponent更新视图
      */
     let value = this.getter.call(this.vm) // 调用vm._update(vm._render())
 
@@ -75,6 +85,8 @@ class Watcher {
     // 并且去重，避免重复的watcher，这样多次修改同一个属性，只会触发一次更新
     // 最后异步执行
     if (this.lazy) {
+      // 计算属性里面的数据更新调用dep.notify()
+      // dirty就需要变成true，但是计算属性还是不能马上计算，还是需要在调用的时候才计算，所以在update的时候只是改了dirty的状态！然后下次调用的时候就会重新计算
       this.dirty = true
     } else {
       queueWatcher(this)
